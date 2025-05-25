@@ -6,66 +6,72 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  matrix: number[][] = [
-    [1, 2, 3, 4, 5],
-    [7, 69, 2, 221, 8974]
-  ]
+  input: string[] = [
+    '12:01:00PM',
+    '12:01:00AM',
+    '07:05:45PM',
+  ];
   
   ngOnInit(): void {
-    this.matrix.forEach(i => {
-      this.miniMaxSum4(i)
+    this.input.forEach(i => {
+      this.timeConversion(i);
     })
   }
-
+  
   // Versión original
-  miniMaxSum(arr: number[]): void {
-    arr.sort((a, b) => a - b)
-    let minMax: number[] = [0, 0]
+  timeConversion(s: string): string {
+    let copy: string = s.slice(0, 8);
+    let hour = copy.slice(0, 2);
+    let minSec = copy.slice(2);
 
-    for (let i = 0; i < 4; i++) {
-      minMax[0] += arr[i]
-      minMax[1] += arr[(arr.length - i) - 1]
+    if (s.includes('AM')) {
+      if (hour === '12') {
+        copy = '00' + minSec;
+      }
+    } else if (s.includes('PM')) {
+      if (hour !== '12') {
+        let parsedhour = parseInt(hour, 10) + 12;
+        copy = parsedhour + minSec
+      }
     }
-
-    console.log(`${minMax[0]} ${minMax[1]}`)
+    return copy
   }
 
   // Versión mejorada con AI
-  miniMaxSum2(arr: number[]): void {
-    arr.sort((a, b) => a - b);
+  timeConversion2(s: string): string {
+    const isPM = s.includes('PM');
+    let hour = parseInt(s.slice(0, 2), 10);
+    const minutesAndSeconds = s.slice(2, 8);
 
-    const min = arr.slice(0, 4).reduce((acc, num) => acc + num, 0);
-    const max = arr.slice(-4).reduce((acc, num) => acc + num, 0);
+    if (isPM && hour !== 12) {
+      hour += 12;
+    } else if (!isPM && hour === 12) {
+      hour = 0;
+    }
 
-    console.log(`${min} ${max}`);
+    return `${hour.toString().padStart(2, '0')}${minutesAndSeconds}`;
   }
 
   // DESGLOSE
-  miniMaxSum3(arr: number[]): void {
-    arr.sort((a, b) => a - b);
+  timeConversion3(s: string): string {
+    const isPM = s.includes('PM');
+    let hour = parseInt(s.slice(0, 2), 10);
+    const minutesAndSeconds = s.slice(2, 8);
 
-    const min = arr.slice(0, 4).reduce((acc, num) => acc + num, 0);
-      // .slice(0, 4) extrae un nuevo array desde que va desde la posicion 0 del array hasta la posición 3, el número 4 indica la posición a partir de la cual ya no se va a extraer
-      // si se usa solo un parametro positivo como .slice(3) extrae desde la posición 3 (arr[3]) hasta el final
-    const max = arr.slice(-4).reduce((acc, num) => acc + num, 0);
-      // .slice(-4) si es negativo, extrae los últimos elementos indicados por el número, en este caso los últimos 4 del array
+    if (isPM && hour !== 12) {
+      hour += 12;
+    } else if (!isPM && hour === 12) {
+      hour = 0;
+    }
 
-    console.log(`${min} ${max}`);
-
-    // EXPLICACIÓN
-    // slice(start, end): Copia los elementos desde start hasta end (sin incluir end).
-    // Si solo se usa start, extrae desde ese índice hasta el final.
-    // Si start es negativo, cuenta desde el final del array.
+    return `${hour.toString().padStart(2, '0')}${minutesAndSeconds}`;
+    // .padStart rellena a la izquierda con espacios o el caracter especificado hasta que se alcance la longitud indicada
+    // si es '12' de PM quedará en 12 y ya no agregará nada ya que ya se había alcanzado la longitud
+    // si es '12' de AM quedará en 0, así que .padStart agregará otro 0 y así alcanzará la longitud
+    // si es '07' de PM quedará en 19 y ya no agregará nada ya que ya se había alcanzado la longitud
   }
 
   // Solución de IA aplicada
-  miniMaxSum4(arr: number[]): void {
-    arr.sort((a, b) => a - b)
-
-    const min = arr.slice(0, 4).reduce((acc, n) => acc + n, 0)
-    const max = arr.slice(-4).reduce((acc, n) => acc + n, 0)
-
-    console.log(`${min} ${max}`)
-  }
+  
   
 }
