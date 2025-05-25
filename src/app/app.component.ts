@@ -7,94 +7,65 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   matrix: number[][] = [
-    [-4, 3, -9, 0, 4, 1],
-    // [1, 2, 3, -1, -2, -3, 0, 0],
+    [1, 2, 3, 4, 5],
+    [7, 69, 2, 221, 8974]
   ]
   
   ngOnInit(): void {
     this.matrix.forEach(i => {
-      this.plusMinus4(i)
+      this.miniMaxSum4(i)
     })
   }
 
   // Versión original
-  plusMinus(arr: number[]): void {
-    let sums: number[] = [0, 0, 0];
-    let output: number[] = [];
-    
-    arr.forEach(i => {
-      if(i > 0) {
-          sums[0]++
-      } else if (i === 0) {
-          sums[2]++
-      } else {
-          sums[1]++
-      }
-    })
-    
-    for(let i = 0; i < sums.length; i++) {
-        output.push(sums[i] / arr.length)
+  miniMaxSum(arr: number[]): void {
+    arr.sort((a, b) => a - b)
+    let minMax: number[] = [0, 0]
+
+    for (let i = 0; i < 4; i++) {
+      minMax[0] += arr[i]
+      minMax[1] += arr[(arr.length - i) - 1]
     }
-    
-    output.forEach(i => {
-        console.log(i.toFixed(6))
-    })
+
+    console.log(`${minMax[0]} ${minMax[1]}`)
   }
 
   // Versión mejorada con AI
-  plusMinusIA(arr: number[]): void { 
-    let sums = arr.reduce((acc, i) => {
-        i > 0 ? acc[0]++ : i === 0 ? acc[2]++ : acc[1]++;
-        return acc;
-    }, [0, 0, 0]);
+  miniMaxSum2(arr: number[]): void {
+    arr.sort((a, b) => a - b);
 
-    sums.map(s => console.log((s / arr.length).toFixed(6)));
+    const min = arr.slice(0, 4).reduce((acc, num) => acc + num, 0);
+    const max = arr.slice(-4).reduce((acc, num) => acc + num, 0);
+
+    console.log(`${min} ${max}`);
   }
 
   // DESGLOSE
-  // Paso 1: usar map, itera el array original y aplica una función en cada 
-  // elemento sin modificar el array original, genera un nuevo array
-  // este puede ser asignado a otroa variable o no
-  plusMinus2(arr: number[]): void {
-    let sums: number[] = [0, 0, 0];
-    
-    arr.forEach(i => {
-      if(i > 0) {
-          sums[0]++
-      } else if (i === 0) {
-          sums[2]++
-      } else {
-          sums[1]++
-      }
-    })
-    
-    sums.map(s => console.log((s / arr.length).toFixed(6)))
-  }
+  miniMaxSum3(arr: number[]): void {
+    arr.sort((a, b) => a - b);
 
-  // Paso 2: user .reduce con estructura ternaria
-  plusMinus3(arr: number[]): void {
-    let sums = arr.reduce((acc, i) => {
-      i > 0 ? acc[0]++ : i === 0 ? acc[2]++ : acc[1]++; // INTERESANTE, estructura ternaria como un condicional ternario
-      return acc;
-      }, [0, 0, 0]);
+    const min = arr.slice(0, 4).reduce((acc, num) => acc + num, 0);
+      // .slice(0, 4) extrae un nuevo array desde que va desde la posicion 0 del array hasta la posición 3, el número 4 indica la posición a partir de la cual ya no se va a extraer
+      // si se usa solo un parametro positivo como .slice(3) extrae desde la posición 3 (arr[3]) hasta el final
+    const max = arr.slice(-4).reduce((acc, num) => acc + num, 0);
+      // .slice(-4) si es negativo, extrae los últimos elementos indicados por el número, en este caso los últimos 4 del array
 
-    // como funciona .reduce = array.reduce((acumulador, elementoActual) => { lógica }, valorInicialDelAcumulador);
-      // acumulador = acc
-      // elementoActual = i
-      // valorInicialDelAcumulador = [0, 0, 0]
-      // logica = {i > 0 ? acc[0]++ : i === 0 ? acc[2]++ : acc[1]++; return acc; }
-    
-    sums.map(s => console.log((s / arr.length).toFixed(6)))
+    console.log(`${min} ${max}`);
+
+    // EXPLICACIÓN
+    // slice(start, end): Copia los elementos desde start hasta end (sin incluir end).
+    // Si solo se usa start, extrae desde ese índice hasta el final.
+    // Si start es negativo, cuenta desde el final del array.
   }
 
   // Solución de IA aplicada
-  plusMinus4(arr: number[]): void {
-    let sums = arr.reduce((acc, i) => {
-      i > 0 ? acc[0]++ : i === 0 ? acc[2]++ : acc[1]++;      
-      return acc
-      }, [0, 0, 0])
+  miniMaxSum4(arr: number[]): void {
+    arr.sort((a, b) => a - b)
 
-    sums.map(s => console.log((s / arr.length).toFixed(6)));
+    const min = arr.slice(0, 4).reduce((acc, n) => acc + n, 0)
+    const max = arr.slice(-4).reduce((acc, n) => acc + n, 0)
+
+    console.log(`${min} ${max}`)
   }
   
 }
